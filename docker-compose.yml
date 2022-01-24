@@ -1,0 +1,31 @@
+version: "3.1"
+services:
+    php-capacitacion:
+        build: docker/php-fpm
+        container_name: ricardo-php-fpm
+        working_dir: /application
+        volumes:
+            - .:/application
+            - ./docker/php-fpm/php-ini-overrides.ini:/etc/php/7.4/fpm/conf.d/99-overrides.ini
+    webserver:
+        image: nginx:alpine
+        container_name: ricardo-webserver
+        working_dir: /application
+        volumes:
+            - .:/application
+            - ./docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+        ports:
+            - 80:80
+    postgres:
+        image: postgres:10.1-alpine
+        container_name: ricardo-pgsql
+        working_dir: /application
+        volumes:
+            - .:/application
+        environment:
+            - POSTGRES_DATABASE=blog
+            - POSTGRES_USER=user
+            - POSTGRES_PASSWORD=password
+        ports:
+            - 5432:5432
+
